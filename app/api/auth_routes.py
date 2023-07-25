@@ -1,7 +1,10 @@
 from flask import Blueprint, jsonify, session, request
-from app.models import User, db
+from app.models import User
 from app.forms import LoginForm
 from app.forms import SignUpForm
+from werkzeug.security import check_password_hash
+from flask_login import login_user, UserMixin
+from ..mongoDB import db, users_collection
 from flask_login import current_user, login_user, logout_user, login_required
 
 auth_routes = Blueprint('auth', __name__)
@@ -24,24 +27,34 @@ def authenticate():
     Authenticates a user.
     """
     if current_user.is_authenticated:
-        return current_user.to_dict()
+        return current_user
     return {'errors': ['Unauthorized']}
-
 
 @auth_routes.route('/login', methods=['POST'])
 def login():
-    """
-    Logs a user in
-    """
     form = LoginForm()
     # Get the csrf_token from the request cookie and put it into the
-    # form manually to validate_on_submit can be used
+    # form manually so that validate_on_submit can be used
     form['csrf_token'].data = request.cookies['csrf_token']
+
+    print(111111111111111111111)
+
     if form.validate_on_submit():
-        # Add the user to the session, we are logged in!
-        user = User.query.filter(User.email == form.data['email']).first()
-        login_user(user)
-        return user.to_dict()
+        print(2222222222)
+
+        email = form.data['email']
+        password = form.data['password']
+
+        user = users_collection.find_one({'email': email})
+        user['_id'] = str(user['_id'])  # Convert the '_id' field to a string
+
+        # Use Flask-Login's login_user function with the user dictionary
+        class_user = User(user)
+        login_user(class_user)
+
+        return jsonify(user)
+
+
     return {'errors': validation_errors_to_error_messages(form.errors)}, 401
 
 
