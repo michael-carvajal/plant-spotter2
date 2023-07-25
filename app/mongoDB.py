@@ -11,4 +11,4 @@ db = client.my_database   # Change 'my_database' to your desired database name
 
 
 users_collection = db.users
-plants_collection = db.users
+plants_collection = db.plants
