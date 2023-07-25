@@ -5,6 +5,7 @@ from flask_cors import CORS
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
 from .models import db, User
+from .mongoDB import users_collection
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.users_routes import user_routes
@@ -22,7 +23,7 @@ login.login_view = 'auth.unauthorized'
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return users_collection.find_one({'_id': str(id)})
 
 
 # Tell flask about our seed commands
