@@ -6,6 +6,7 @@ import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import { fetchPlants } from "./store/plants";
+import Plants from "./components/Plants";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function App() {
           </Route>
         </Switch>
       )}
+      <Plants />
     </>
   );
 }
