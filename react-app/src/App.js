@@ -6,7 +6,7 @@ import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import { fetchPlants } from "./store/plants";
 import Plants from "./components/Plants";
-import Signup from "./components/SignupFormPage";
+import SignupFormPage from "./components/SignupFormPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ function App() {
             <LoginFormPage />
           </Route>
           <Route path="/signup">
-            <Signup />
+            <SignupFormPage />
           </Route>
         </Switch>
       )}

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
 const SignupFormPage = () => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const [inputValue, setInputValue] = useState({
     email: "",
     password: "",
@@ -42,7 +42,7 @@ const SignupFormPage = () => {
       if (success) {
         handleSuccess(message);
         setTimeout(() => {
-          navigate("/");
+          history.push('/');
         }, 1000);
       } else {
         handleError(message);
