@@ -1,79 +1,105 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { signUp } from "../../store/session";
-import './SignupForm.css';
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
-function SignupFormPage() {
-  const dispatch = useDispatch();
-  const sessionUser = useSelector((state) => state.session.user);
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState([]);
+const SignupFormPage = () => {
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState({
+    email: "",
+    password: "",
+    username: "",
+  });
+  const { email, password, username } = inputValue;
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
+  };
 
-  if (sessionUser) return <Redirect to="/" />;
+  const handleError = (err) =>
+    toast.error(err, {
+      position: "bottom-left",
+    });
+  const handleSuccess = (msg) =>
+    toast.success(msg, {
+      position: "bottom-right",
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password === confirmPassword) {
-        const data = await dispatch(signUp(username, email, password));
-        if (data) {
-          setErrors(data)
-        }
-    } else {
-        setErrors(['Confirm Password field must be the same as the Password field']);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:4000/signup",
+        {
+          ...inputValue,
+        },
+        { withCredentials: true }
+      );
+      const { success, message } = data;
+      if (success) {
+        handleSuccess(message);
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      } else {
+        handleError(message);
+      }
+    } catch (error) {
+      console.log(error);
     }
+    setInputValue({
+      ...inputValue,
+      email: "",
+      password: "",
+      username: "",
+    });
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
+    <div className="form_container">
+      <h2>Signup Account</h2>
       <form onSubmit={handleSubmit}>
-        <ul>
-          {errors.map((error, idx) => <li key={idx}>{error}</li>)}
-        </ul>
-        <label>
-          Email
+        <div>
+          <label htmlFor="email">Email</label>
           <input
-            type="text"
+            type="email"
+            name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            placeholder="Enter your email"
+            onChange={handleOnChange}
           />
-        </label>
-        <label>
-          Username
+        </div>
+        <div>
+          <label htmlFor="email">Username</label>
           <input
             type="text"
+            name="username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
+            placeholder="Enter your username"
+            onChange={handleOnChange}
           />
-        </label>
-        <label>
-          Password
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
+            name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            placeholder="Enter your password"
+            onChange={handleOnChange}
           />
-        </label>
-        <label>
-          Confirm Password
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Sign Up</button>
+        </div>
+        <button type="submit">Submit</button>
+        <span>
+          Already have an account? <Link to={"/login"}>Login</Link>
+        </span>
       </form>
-    </>
+      <ToastContainer />
+    </div>
   );
-}
+};
 
 export default SignupFormPage;

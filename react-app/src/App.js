@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
-import SignupFormPage from "./components/SignupFormPage";
 import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import { fetchPlants } from "./store/plants";
 import Plants from "./components/Plants";
+import Signup from "./components/SignupFormPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ function App() {
             <LoginFormPage />
           </Route>
           <Route path="/signup">
-            <SignupFormPage />
+            <Signup />
           </Route>
         </Switch>
       )}
