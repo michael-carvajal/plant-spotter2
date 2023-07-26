@@ -1,57 +1,94 @@
 import React, { useState } from "react";
-import { login } from "../../store/session";
-import { useDispatch, useSelector } from "react-redux";
-import { Redirect } from "react-router-dom";
-import './LoginForm.css';
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
-function LoginFormPage() {
-  const dispatch = useDispatch();
-  const sessionUser = useSelector((state) => state.session.user);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState([]);
+const LoginFormPage = () => {
+  const history = useHistory();
+  const [inputValue, setInputValue] = useState({
+    email: "",
+    password: "",
+  });
+  const { email, password } = inputValue;
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
+  };
 
-  if (sessionUser) return <Redirect to="/" />;
+  const handleError = (err) =>
+    toast.error(err, {
+      position: "bottom-left",
+    });
+  const handleSuccess = (msg) =>
+    toast.success(msg, {
+      position: "bottom-left",
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await dispatch(login(email, password));
-    if (data) {
-      setErrors(data);
+    try {
+      const { data } = await axios.post(
+        "http://localhost:4000/login",
+        {
+          ...inputValue,
+        },
+        { withCredentials: true }
+      );
+      console.log(data);
+      const { success, message } = data;
+      if (success) {
+        handleSuccess(message);
+        setTimeout(() => {
+          history.push("/");
+        }, 1000);
+      } else {
+        handleError(message);
+      }
+    } catch (error) {
+      console.log(error);
     }
+    setInputValue({
+      ...inputValue,
+      email: "",
+      password: "",
+    });
   };
 
   return (
-    <>
-      <h1>Log In</h1>
+    <div className="form_container">
+      <h2>Login Account</h2>
       <form onSubmit={handleSubmit}>
-        <ul>
-          {errors.map((error, idx) => (
-            <li key={idx}>{error}</li>
-          ))}
-        </ul>
-        <label>
-          Email
+        <div>
+          <label htmlFor="email">Email</label>
           <input
-            type="text"
+            type="email"
+            name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            placeholder="Enter your email"
+            onChange={handleOnChange}
           />
-        </label>
-        <label>
-          Password
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
+            name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            placeholder="Enter your password"
+            onChange={handleOnChange}
           />
-        </label>
-        <button type="submit">Log In</button>
+        </div>
+        <button type="submit">Submit</button>
+        <span>
+          Already have an account? <Link to={"/signup"}>Signup</Link>
+        </span>
       </form>
-    </>
+      <ToastContainer />
+    </div>
   );
-}
+};
 
 export default LoginFormPage;

@@ -7,6 +7,7 @@ import Navigation from "./components/Navigation";
 import { fetchPlants } from "./store/plants";
 import Plants from "./components/Plants";
 import SignupFormPage from "./components/SignupFormPage";
+import Home from "./components/LoginFormModal/Home";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,6 +23,9 @@ function App() {
       <Navigation isLoaded={isLoaded} />
       {isLoaded && (
         <Switch>
+          <Route exact path='/'>
+            <Home />
+          </Route>
           <Route path="/login" >
             <LoginFormPage />
           </Route>
