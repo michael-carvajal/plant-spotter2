@@ -14,7 +14,22 @@ export default function Plants(params: any) {
   return (
     <>
           <h1>Plants Component 2</h1>
-          
+          {userPlants.map((plant, index) => {
+              return (
+                  <div key={`plant-index-${index}`}>
+                      <p>Name of Plant: { plant.name}</p>
+                      <p>Description: {plant.description}</p>
+                      <p>Safe to eat?: {plant.isSafe ? 'EAT UP!' : 'Avoid consumption at all costs'}</p>
+                      <p>Coordinates:
+
+                          <ul>
+                            <li>Latitude: {plant.lat}</li>
+                            <li>Longitude: {plant.lng}</li>
+
+                          </ul></p>
+                  </div>
+              )
+          })}
       {/* Use the 'plants' variable as needed in your component */}
     </>
   );
