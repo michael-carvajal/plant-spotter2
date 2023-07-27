@@ -35,7 +35,7 @@ export const authenticate = () => async (dispatch) => {
         {},
         { withCredentials: true }
       );
-	const { status, user } = data;
+	const { user } = data;
 	dispatch(setUser(user))
 };
 
@@ -74,15 +74,8 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
-	const response = await fetch("/api/auth/logout", {
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
 
-	if (response.ok) {
-		dispatch(removeUser());
-	}
+	dispatch(removeUser())
 };
 
 export const signUp = (username, email, password) => async (dispatch) => {

@@ -3,14 +3,15 @@ import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../store/session";
 
 const Home = () => {
   const history = useHistory();
   const [cookies, removeCookie] = useCookies([]);
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
   const { session  } = useSelector(state => state)
-
+  const dispatch = useDispatch();
   // useEffect(() => {
   //   const verifyCookie = async () => {
   //     if (!cookies.token) {
@@ -31,8 +32,10 @@ const Home = () => {
   //   };
   //   verifyCookie();
   // }, [cookies, history, removeCookie]);
-  const Logout = () => {
+  const Logout = async () => {
     removeCookie("token");
+
+    dispatch(logout())
     history.push("/login");
   };
   return (
