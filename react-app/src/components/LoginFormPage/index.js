@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/session";
 
 const LoginFormPage = () => {
   const history = useHistory();
+  const dispatch = useDispatch()
   const [inputValue, setInputValue] = useState({
     email: "",
     password: "",
@@ -30,22 +33,26 @@ const LoginFormPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
-        "http://localhost:4000/login",
-        {
-          ...inputValue,
-        },
-        { withCredentials: true }
-      );
+      // const { data } = await axios.post(
+      //   "http://localhost:4000/login",
+      //   {
+      //     ...inputValue,
+      //   },
+      //   { withCredentials: true }
+      // );
+      const { email, password } = inputValue;
+      const data = await dispatch(login(email, password))
+
       console.log(data);
       const { success, message } = data;
+      console.log(success);
       if (success) {
+        console.log('we have success====> ', success);
         handleSuccess(message);
-        setTimeout(() => {
-          history.push("/");
-        }, 1000);
+        history.push('/')
       } else {
         handleError(message);
+        return 
       }
     } catch (error) {
       console.log(error);
