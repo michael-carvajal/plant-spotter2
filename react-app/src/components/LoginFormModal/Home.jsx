@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import axios from "axios";
@@ -12,26 +12,25 @@ const Home = () => {
   // const [username, setUsername] = useState("");
   const { session  } = useSelector(state => state)
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   const verifyCookie = async () => {
-  //     if (!cookies.token) {
-  //       history.push("/login");
-  //     }
-  //     const { data } = await axios.post(
-  //       "http://localhost:4000",
-  //       {},
-  //       { withCredentials: true }
-  //     );
-  //     const { status, user } = data;
-  //     setUsername(user);
-  //     return status
-  //       ? toast(`Hello ${user}`, {
-  //           position: "top-right",
-  //         })
-  //       : (removeCookie("token"), history.push("/login"));
-  //   };
-  //   verifyCookie();
-  // }, [cookies, history, removeCookie]);
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.token) {
+        history.push("/login");
+      }
+      const { data } = await axios.post(
+        "http://localhost:4000",
+        {},
+        { withCredentials: true }
+      );
+      const { status, user } = data;
+      return status
+        ? toast(`Hello ${user.username[0].toUpperCase() + user.username.slice(1)}`, {
+            position: "top-right",
+          })
+        : (removeCookie("token"), history.push("/login"));
+    };
+    verifyCookie();
+  }, [ history]);
   const Logout = async () => {
     removeCookie("token");
 
