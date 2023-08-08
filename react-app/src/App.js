@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import LoginFormPage from "./components/LoginFormPage";
 import { authenticate } from "./store/session";
-import Navigation from "./components/Navigation";
+// import Navigation from "./components/Navigation";
 import { fetchPlants } from "./store/plants";
 import Plants from "./components/Plants";
 import SignupFormPage from "./components/SignupFormPage";
@@ -20,7 +20,7 @@ function App() {
 
   return (
     <>
-      <Navigation isLoaded={isLoaded} />
+
       {isLoaded && (
         <Switch>
           <Route exact path='/'>
@@ -40,3 +40,4 @@ function App() {
 }
 
 export default App;
+{/* <Navigation isLoaded={isLoaded} /> */}
